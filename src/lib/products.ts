@@ -17,6 +17,7 @@ export interface Product {
   category: string;
   image: string;
   description?: string;
+  sizes?: string[];
 }
 export const products: Product[] = [
 
