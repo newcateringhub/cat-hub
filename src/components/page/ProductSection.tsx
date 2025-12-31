@@ -1,13 +1,23 @@
 "use client";
-import { useState } from 'react';
+
+import { useState, useEffect } from 'react';
 import ProductCard from '../products/ProductCard';
-import { products } from '@/lib/products';
+import { products, categories } from '@/lib/products';
 
-export default function ProductSection() {
-  const [activeCategory, setActiveCategory] = useState('All');
+interface ProductSectionProps {
+  defaultCategory?: string;
+}
 
-  // Get unique categories from your product list
-  const categories = ['All', ...new Set(products.map(p => p.category))];
+export default function ProductSection({ defaultCategory }: ProductSectionProps) {
+  // Initialize state with the prop or 'All'
+  const [activeCategory, setActiveCategory] = useState(defaultCategory || 'All');
+
+  // Sync state if the URL parameter changes
+  useEffect(() => {
+    if (defaultCategory) {
+      setActiveCategory(defaultCategory);
+    }
+  }, [defaultCategory]);
 
   const filteredProducts = activeCategory === 'All' 
     ? products 
@@ -23,7 +33,7 @@ export default function ProductSection() {
           </div>
         </div>
 
-        {/* --- SLICK FILTER BAR --- */}
+        {/* Filter Bar */}
         <div className="flex flex-wrap gap-4 mb-12 border-b border-border pb-6">
           {categories.map((cat) => (
             <button
@@ -40,7 +50,6 @@ export default function ProductSection() {
           ))}
         </div>
         
-        {/* The Grid will now update instantly when a category is clicked */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
           {filteredProducts.map((product) => (
             <div key={product.id} className="animate-in fade-in zoom-in duration-500">
@@ -48,6 +57,12 @@ export default function ProductSection() {
             </div>
           ))}
         </div>
+
+        {filteredProducts.length === 0 && (
+          <div className="text-center py-20">
+            <p className="text-text-light italic">No products found in this category.</p>
+          </div>
+        )}
       </div>
     </section>
   );
