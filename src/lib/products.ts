@@ -11,6 +11,13 @@ function createId(name: string): string {
     .replace(/^-|-$/g, '');
 }
 
+export interface Product {
+  id: string;
+  name: string;
+  category: string;
+  image: string;
+  description?: string;
+}
 export const products: Product[] = [
 
   {
