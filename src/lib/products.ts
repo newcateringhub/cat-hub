@@ -1,4 +1,4 @@
-import { Product } from './types';
+
 
 function createId(name: string): string {
   return name
