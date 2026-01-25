@@ -1,5 +1,7 @@
 "use client";
 
+import DownloadButton from '../ui/DownloadButton';
+
 const catalogues = [
   {
     title: "Professional Cookware",
@@ -43,14 +45,15 @@ export default function CatalogueSection() {
                 {item.description}
               </p>
               
-              {/* THE PATH: /catalogues/filename.pdf points to public/catalogues/ */}
-              <a 
-                href={`/catalogues/${item.filename}`} 
-                download 
-                className="btn-secondary w-full py-3 text-[10px]"
-              >
-                Download PDF ({item.size})
-              </a>
+              {/* ✅ THE FIX: We removed the <a> tag and used the component below */}
+              <DownloadButton 
+                catalogName={item.title} 
+                fileUrl={`/catalogues/${item.filename}`}
+              />
+              
+              <span className="text-[10px] text-text-light mt-4 opacity-50 uppercase tracking-widest">
+                File Size: {item.size}
+              </span>
             </div>
           ))}
         </div>
