@@ -1,32 +1,25 @@
 import { neon } from '@neondatabase/serverless';
 import { NextResponse } from 'next/server';
 
-export async function POST(request: Request) {
+export async function GET(request: Request) {
   try {
-    const { phone, catalogName } = await request.json();
-    
-    // This uses the environment variable Neon automatically adds to Vercel
+    const { searchParams } = new URL(request.url);
+    const authHeader = searchParams.get('auth');
+
+    // 1. Ensure the password exactly matches (Case Sensitive)
+    // Double check that you aren't using an Uppercase 'A' if you typed 'admin123'
+    if (!authHeader || authHeader !== 'admin123') {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const sql = neon(process.env.DATABASE_URL!);
     
-    // Create the table if it doesn't exist
-    await sql`
-      CREATE TABLE IF NOT EXISTS leads (
-        id SERIAL PRIMARY KEY,
-        phone TEXT NOT NULL,
-        catalog_name TEXT,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
-    `;
-
-    // Save the phone number
-    await sql`
-      INSERT INTO leads (phone, catalog_name)
-      VALUES (${phone}, ${catalogName});
-    `;
-
-    return NextResponse.json({ success: true });
+    // 2. Fetch leads
+    const data = await sql`SELECT * FROM leads ORDER BY created_at DESC`;
+    
+    return NextResponse.json(data);
   } catch (error) {
-    console.error('Database Error:', error);
-    return NextResponse.json({ error: "Failed to save lead" }, { status: 500 });
+    console.error('Admin API Error:', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
