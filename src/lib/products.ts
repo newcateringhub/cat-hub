@@ -248,7 +248,7 @@ export const categories = [
 // 2. Map those exact names to the new image paths
 export const categoryImages: { [key: string]: string } = {
   "Spoons": "/images/fns-cutlery.png",
-  "Bowls": "/images/lissome-bowl.png", // Ensure this file exists in public/images/
+  "Bowls": "/images/pvd-gold-oblique-bowl-14-18-22-cm.png", // Ensure this file exists in public/images/
   "Plates": "/images/square-round-plates.png",
   "Chafers": "/images/3ltr-pvd-gold-handi-chafer.png",
   "Cutlery": "/images/pvd-gold-cutlery.png",
@@ -257,7 +257,7 @@ export const categoryImages: { [key: string]: string } = {
   // ADD OR UPDATE THESE SPECIFICALLY:
   "Platters": "/images/pvd-gold-platters.png",
   "Risers": "/images/pvd-gold-risers.png",
-  "Serving": "/images/new-serving-image.png",
+  "Serving": "/images/pvd-gold-serving-ladels.png",
   "Soupware": "/images/ribbed-soup-tureen-10ltr.png"
 };
 // ===============================================
