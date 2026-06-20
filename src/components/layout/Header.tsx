@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useInquiry } from '@/context/InquiryContext';
 import InquiryDrawer from './InquiryDrawer';
@@ -65,14 +66,16 @@ export default function Header() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-[72px] flex items-center justify-between gap-4">
           
           {/* Logo */}
-          <Link href="/" className="flex-shrink-0 flex items-center gap-2 group">
-            <div className="w-7 h-7 border border-[var(--color-accent)] flex items-center justify-center">
-              <div className="w-3.5 h-3.5 bg-[var(--color-accent)]"></div>
-            </div>
-            <span style={{ fontFamily: 'var(--font-display)', fontSize: '1.3rem', fontWeight: 500, letterSpacing: '-0.02em', color: 'var(--color-text)' }}>
-              Catering<span style={{ color: 'var(--color-accent)' }}>Hub</span>
-            </span>
-          </Link>
+          <Link href="/" className="flex items-center gap-3">
+  <Image
+    src="/logo_ssrb.png"
+    alt="New Catering Hub"
+    width={260}
+    height={100}
+    priority
+    className="h-12 w-auto object-contain"
+  />
+</Link>
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-8">
