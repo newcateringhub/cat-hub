@@ -57,6 +57,7 @@ export default function Header() {
     { href: '/', label: 'Home' },
     { href: '/products', label: 'Products' },
     { href: '/#catalogue', label: 'Catalogues' },
+    { href: '/blogs', label: 'Blogs' },
     { href: '/#contact', label: 'Contact' },
   ];
 
@@ -77,6 +78,7 @@ export default function Header() {
   />
 </Link>
 
+
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-8">
             {navLinks.map(link => (
@@ -84,10 +86,14 @@ export default function Header() {
                 key={link.href}
                 href={link.href}
                 className={`text-[11px] uppercase tracking-[0.18em] font-medium transition-colors duration-200 ${
-                  pathname === link.href
-                    ? 'text-[var(--color-accent)]'
-                    : 'text-[var(--color-text-light)] hover:text-[var(--color-text)]'
-                }`}
+  link.href === '/'
+    ? pathname === '/'
+      ? 'text-[var(--color-accent)]'
+      : 'text-[var(--color-text-light)] hover:text-[var(--color-text)]'
+    : pathname.startsWith(link.href)
+      ? 'text-[var(--color-accent)]'
+      : 'text-[var(--color-text-light)] hover:text-[var(--color-text)]'
+}`}
               >
                 {link.label}
               </Link>
