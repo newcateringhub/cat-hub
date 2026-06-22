@@ -1,13 +1,29 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 
+const RichEditor = dynamic(
+  () => import("@/components/admin/RichEditor"),
+  { ssr: false }
+);
 export default function AdminDashboard() {
   const [leads, setLeads] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [password, setPassword] = useState("");
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [blogs, setBlogs] = useState<any[]>([]);
+  const [username, setUsername] = useState("");
+const [editingId, setEditingId] = useState<number | null>(null);
+
+const fetchBlogs = async () => {
+  const res = await fetch("/api/admin/blogs");
+
+  const data = await res.json();
+
+  setBlogs(data);
+};
 
   const [activeTab, setActiveTab] = useState("leads");
 
@@ -54,65 +70,115 @@ export default function AdminDashboard() {
       setIsLoading(false);
     }
   };
+const deleteBlog = async (id: number) => {
+  const confirmed = window.confirm(
+    "Delete this blog?"
+  );
 
+  if (!confirmed) return;
+
+  await fetch(`/api/admin/blogs/${id}`, {
+    method: "DELETE",
+  });
+
+  fetchBlogs();
+};
   const publishBlog = async () => {
-    setIsPublishing(true);
+  setIsPublishing(true);
 
-    try {
-      const res = await fetch("/api/admin/blogs", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(blog),
-      });
+  try {
+    const url = editingId
+      ? `/api/admin/blogs/${editingId}`
+      : "/api/admin/blogs";
 
-      if (!res.ok) {
-        throw new Error();
-      }
+    const method = editingId ? "PUT" : "POST";
 
-      setNotification({
-  type: "success",
-  message: "Blog published successfully!",
-});
+    const res = await fetch(url, {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(blog),
+    });
 
-setTimeout(() => {
-  setNotification(null);
-}, 3000);
-
-      setBlog({
-        title: "",
-        category: "",
-        excerpt: "",
-        content: "",
-      });
-    } catch {
-      setNotification({
-  type: "error",
-  message: "Failed to publish blog.",
-});
-
-setTimeout(() => {
-  setNotification(null);
-}, 3000);
+    if (!res.ok) {
+      throw new Error();
     }
 
-    setIsPublishing(false);
-  };
+    alert(
+      editingId
+        ? "Blog updated!"
+        : "Blog published!"
+    );
 
+    setEditingId(null);
+
+    setBlog({
+      title: "",
+      category: "",
+      excerpt: "",
+      content: "",
+    });
+
+    fetchBlogs();
+  } catch {
+    alert("Failed.");
+  }
+
+  setIsPublishing(false);
+};
   useEffect(() => {
-    const savedPass = sessionStorage.getItem("admin_auth");
+    const auth = sessionStorage.getItem("admin_auth");
 
-    if (savedPass) {
-      setPassword(savedPass);
-      fetchLeads(savedPass);
-    }
+if (auth === "authenticated") {
+  setIsAuthorized(true);
+  fetchLeads(process.env.NEXT_PUBLIC_ADMIN_KEY || "");
+  fetchBlogs();
+}
   }, []);
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    fetchLeads();
-  };
+  const handleLogin = async (
+  e: React.FormEvent
+) => {
+  e.preventDefault();
+
+  setIsLoading(true);
+
+  try {
+    const res = await fetch(
+      "/api/admin/login",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type":
+            "application/json",
+        },
+        body: JSON.stringify({
+          username,
+          password,
+        }),
+      }
+    );
+
+    if (!res.ok) {
+      throw new Error();
+    }
+
+    sessionStorage.setItem(
+      "admin_auth",
+      "authenticated"
+    );
+
+    setIsAuthorized(true);
+
+    fetchLeads(password);
+    fetchBlogs();
+  } catch {
+    setError("Invalid credentials");
+  }
+
+  setIsLoading(false);
+};
 
   if (!isAuthorized) {
     return (
@@ -129,6 +195,25 @@ setTimeout(() => {
           </div>
 
           <form onSubmit={handleLogin} className="space-y-5">
+            <input
+  type="text"
+  placeholder="Username"
+  value={username}
+  onChange={(e) =>
+    setUsername(e.target.value)
+  }
+  className="
+    w-full
+    bg-[#181818]
+    border
+    border-[#2A2A2A]
+    text-white
+    rounded-xl
+    p-4
+    focus:outline-none
+    focus:border-[#D4B06A]
+  "
+/>
             <input
               type="password"
               placeholder="Enter Password"
@@ -215,7 +300,9 @@ setTimeout(() => {
 
             <button
               onClick={() => {
-                sessionStorage.clear();
+                sessionStorage.removeItem(
+  "admin_auth"
+);
                 window.location.reload();
               }}
               className="mt-3 text-sm text-red-400 hover:text-red-300"
@@ -405,47 +492,139 @@ setTimeout(() => {
                 "
               />
 
-              <textarea
-                rows={15}
-                value={blog.content}
-                onChange={(e) =>
-                  setBlog({
-                    ...blog,
-                    content: e.target.value,
-                  })
-                }
-                placeholder="Blog Content"
-                className="
-                  w-full
-                  bg-[#181818]
-                  border
-                  border-[#2A2A2A]
-                  text-white
-                  rounded-xl
-                  p-4
-                  focus:outline-none
-                  focus:border-[#D4B06A]
-                "
-              />
+              <div>
+  <label className="block text-sm uppercase tracking-widest text-zinc-400 mb-3">
+    Blog Content
+  </label>
 
-              <button
-                onClick={publishBlog}
-                disabled={isPublishing}
-                className="
-                  bg-[#D4B06A]
-                  text-black
-                  font-semibold
-                  px-8
-                  py-4
-                  rounded-xl
-                  hover:opacity-90
-                  transition
-                "
-              >
-                {isPublishing
-                  ? "Publishing..."
-                  : "Publish Blog"}
-              </button>
+  <RichEditor
+    value={blog.content}
+    onChange={(value) =>
+      setBlog({
+        ...blog,
+        content: value,
+      })
+    }
+  />
+</div>
+
+<div className="flex gap-4">
+  <button
+    onClick={publishBlog}
+    disabled={isPublishing}
+    className="
+      bg-[#D4B06A]
+      text-black
+      font-semibold
+      px-8
+      py-4
+      rounded-xl
+      hover:opacity-90
+      transition
+    "
+  >
+    {isPublishing
+      ? "Saving..."
+      : editingId
+      ? "Update Blog"
+      : "Publish Blog"}
+  </button>
+
+  {editingId && (
+    <button
+      onClick={() => {
+        setEditingId(null);
+
+        setBlog({
+          title: "",
+          category: "",
+          excerpt: "",
+          content: "",
+        });
+      }}
+      className="
+        bg-zinc-700
+        px-6
+        py-4
+        rounded-xl
+      "
+    >
+      Cancel
+    </button>
+  )}
+</div>
+
+<div className="mt-16">
+  <h2 className="text-3xl font-heading text-[#D4B06A] mb-6">
+    Existing Blogs
+  </h2>
+
+  <div className="space-y-4">
+    {blogs.map((item) => (
+      <div
+        key={item.id}
+        className="
+          bg-[#181818]
+          border
+          border-[#2A2A2A]
+          rounded-2xl
+          p-6
+          flex
+          justify-between
+          items-center
+        "
+      >
+        <div>
+          <h3 className="text-xl font-semibold">
+            {item.title}
+          </h3>
+
+          <p className="text-zinc-500">
+            {item.category}
+          </p>
+        </div>
+
+        <div className="flex gap-3">
+          <button
+            onClick={() => {
+              setEditingId(item.id);
+
+              setBlog({
+                title: item.title,
+                category: item.category,
+                excerpt: item.excerpt,
+                content: item.content,
+              });
+            }}
+            className="
+              bg-[#D4B06A]
+              text-black
+              px-5
+              py-2
+              rounded-lg
+              font-semibold
+            "
+          >
+            Edit
+          </button>
+
+          <button
+            onClick={() => deleteBlog(item.id)}
+            className="
+              bg-red-600
+              text-white
+              px-5
+              py-2
+              rounded-lg
+            "
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    ))}
+  </div>
+</div>
 
             </div>
           </>

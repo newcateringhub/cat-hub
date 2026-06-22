@@ -6,8 +6,7 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const authHeader = searchParams.get('auth');
     
-    // This pulls from your .env.local 'manav123' or defaults to 'admin123'
-    const correctPassword = process.env.ADMIN_PASSWORD || 'admin123';
+    const correctPassword = process.env.ADMIN_PASSWORD;
 
     if (!authHeader || authHeader !== correctPassword) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

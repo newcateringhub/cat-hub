@@ -2,18 +2,14 @@ import { NextResponse } from "next/server";
 
 const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
 
-function convertMarkdownToBlocks(markdown: string) {
-  const lines = markdown.split("\n");
+export async function GET() {
+  const response = await fetch(
+    `${STRAPI_URL}/api/blogs`
+  );
 
-  return lines.map((line) => ({
-    type: "paragraph",
-    children: [
-      {
-        type: "text",
-        text: line,
-      },
-    ],
-  }));
+  const data = await response.json();
+
+  return NextResponse.json(data.data);
 }
 
 export async function POST(req: Request) {
@@ -25,22 +21,6 @@ export async function POST(req: Request) {
       .replace(/[^a-z0-9\s-]/g, "")
       .replace(/\s+/g, "-");
 
-    const strapiData = {
-      data: {
-        title: body.title,
-        slug,
-        category: body.category,
-        excerpt: body.excerpt,
-        publishedDate: new Date()
-          .toISOString()
-          .split("T")[0],
-        featured: false,
-        content: convertMarkdownToBlocks(
-          body.content
-        ),
-      },
-    };
-
     const response = await fetch(
       `${STRAPI_URL}/api/blogs`,
       {
@@ -49,29 +29,27 @@ export async function POST(req: Request) {
           "Content-Type": "application/json",
           Authorization: `Bearer ${process.env.STRAPI_API_TOKEN}`,
         },
-        body: JSON.stringify(strapiData),
+        body: JSON.stringify({
+          data: {
+            title: body.title,
+            slug,
+            category: body.category,
+            excerpt: body.excerpt,
+            content: body.content,
+            featured: false,
+            publishedDate:
+              new Date().toISOString().split("T")[0],
+          },
+        }),
       }
     );
-
-    if (!response.ok) {
-      const error = await response.text();
-
-      console.log(error);
-
-      return NextResponse.json(
-        { error },
-        { status: 500 }
-      );
-    }
 
     const data = await response.json();
 
     return NextResponse.json(data);
-  } catch (err) {
-    console.error(err);
-
+  } catch {
     return NextResponse.json(
-      { error: "Failed to publish" },
+      { error: "Failed" },
       { status: 500 }
     );
   }
