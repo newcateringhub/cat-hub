@@ -3,6 +3,6 @@ import { MetadataRoute } from 'next';
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: { userAgent: '*', allow: '/' },
-    sitemap: 'https://cateringhub.com/sitemap.xml',
+    sitemap: 'https://newcateringhub.com/sitemap.xml',
   };
 }
