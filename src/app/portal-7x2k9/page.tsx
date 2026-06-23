@@ -93,6 +93,7 @@ const deleteBlog = async (id: number) => {
 
     const method = editingId ? "PUT" : "POST";
 
+    console.log("BLOG DATA:", blog);
     const res = await fetch(url, {
       method,
       headers: {
@@ -506,6 +507,9 @@ if (auth === "authenticated") {
       })
     }
   />
+  <div className="mt-4 p-4 bg-black text-green-400 text-xs overflow-auto">
+  {blog.content}
+</div>
 </div>
 
 <div className="flex gap-4">

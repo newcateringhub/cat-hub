@@ -46,8 +46,18 @@ export async function POST(req: Request) {
 
     const data = await response.json();
 
+    console.log("STRAPI RESPONSE:", data);
+
+    if (!response.ok) {
+      return NextResponse.json(data, {
+        status: response.status,
+      });
+    }
+
     return NextResponse.json(data);
-  } catch {
+  } catch (err) {
+    console.error(err);
+
     return NextResponse.json(
       { error: "Failed" },
       { status: 500 }
