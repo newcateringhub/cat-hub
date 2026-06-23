@@ -11,6 +11,11 @@ export async function PUT(
   try {
     const body = await req.json();
 
+    const slug = body.title
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, "")
+      .replace(/\s+/g, "-");
+
     const response = await fetch(
       `${STRAPI_URL}/api/blogs/${id}`,
       {
@@ -22,9 +27,11 @@ export async function PUT(
         body: JSON.stringify({
           data: {
             title: body.title,
+            slug,
             category: body.category,
             excerpt: body.excerpt,
             content: body.content,
+            featured: body.featured ?? false,
           },
         }),
       }
@@ -33,7 +40,9 @@ export async function PUT(
     const data = await response.json();
 
     return NextResponse.json(data);
-  } catch {
+  } catch (error) {
+    console.error(error);
+
     return NextResponse.json(
       { error: "Update failed" },
       { status: 500 }
@@ -61,7 +70,9 @@ export async function DELETE(
     return NextResponse.json({
       success: true,
     });
-  } catch {
+  } catch (error) {
+    console.error(error);
+
     return NextResponse.json(
       { error: "Delete failed" },
       { status: 500 }

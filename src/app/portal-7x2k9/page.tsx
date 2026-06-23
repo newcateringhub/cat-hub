@@ -15,7 +15,8 @@ export default function AdminDashboard() {
   const [error, setError] = useState<string | null>(null);
   const [blogs, setBlogs] = useState<any[]>([]);
   const [username, setUsername] = useState("");
-const [editingId, setEditingId] = useState<number | null>(null);
+const [editingId, setEditingId] =
+  useState<string | null>(null);
 
 const fetchBlogs = async () => {
   const res = await fetch("/api/admin/blogs");
@@ -70,7 +71,7 @@ const fetchBlogs = async () => {
       setIsLoading(false);
     }
   };
-const deleteBlog = async (id: number) => {
+const deleteBlog = async (id: string) => {
   const confirmed = window.confirm(
     "Delete this blog?"
   );
@@ -566,7 +567,7 @@ if (auth === "authenticated") {
   <div className="space-y-4">
     {blogs.map((item) => (
       <div
-        key={item.id}
+        key={item.documentId}
         className="
           bg-[#181818]
           border
@@ -591,7 +592,7 @@ if (auth === "authenticated") {
         <div className="flex gap-3">
           <button
             onClick={() => {
-              setEditingId(item.id);
+              setEditingId(item.documentId);
 
               setBlog({
                 title: item.title,
@@ -613,7 +614,7 @@ if (auth === "authenticated") {
           </button>
 
           <button
-            onClick={() => deleteBlog(item.id)}
+            onClick={() => deleteBlog(item.documentId)}
             className="
               bg-red-600
               text-white
