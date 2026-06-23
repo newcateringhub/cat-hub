@@ -12,15 +12,69 @@ export const metadata = {
   },
   description: 'India\'s leading supplier of premium catering utensils, chafing dishes, stainless steel chafers, PVD gold tableware, cutlery, bowls, risers & hospitality equipment. Trusted by top hotels, restaurants & caterers across Mumbai and India.',
   keywords: [
-    'catering utensils India', 'chafing dishes Mumbai', 'stainless steel chafer', 'PVD gold tableware',
-    'hotel catering equipment', 'restaurant utensils supplier', 'catering equipment Mumbai',
-    'buffet equipment India', 'catering supplies wholesale', 'hospitality equipment supplier',
-    'HoReCa equipment India', 'catering hub Mumbai', 'banquet equipment supplier',
-    'food warmer chafer', 'serving dishes catering', 'cutlery supplier India',
-    'Raj catering equipment', 'Raj kitchen', 'Arjun catering', 'Vinod cookware alternative',
-    'catering utensils online India', 'premium serving equipment', 'wedding catering equipment',
-    'event catering supplies Mumbai', 'bulk catering equipment'
-  ],
+  // Core business
+  "catering equipment",
+  "catering utensils",
+  "catering supplies",
+  "hospitality equipment",
+  "hotel equipment",
+  "restaurant equipment",
+  "banquet equipment",
+
+  // Location-based
+  "catering equipment Mumbai",
+  "catering utensils Mumbai",
+  "catering supplies Mumbai",
+  "hospitality equipment Mumbai",
+  "catering equipment India",
+  "catering utensils India",
+
+  // Product keywords
+  "chafing dishes",
+  "food warmers",
+  "buffet equipment",
+  "serving utensils",
+  "serving dishes",
+  "stainless steel chafer",
+  "gold chafing dish",
+  "PVD gold tableware",
+  "buffet stands",
+  "serving bowls",
+  "serving platters",
+  "soup tureens",
+  "food display stands",
+  "catering cutlery",
+  "serving ladles",
+
+  // Industry terms
+  "HoReCa equipment",
+  "commercial catering equipment",
+  "hotel buffet equipment",
+  "restaurant serving equipment",
+  "wedding catering equipment",
+  "event catering supplies",
+  "banquet serving equipment",
+  "premium catering products",
+
+  // Purchase intent
+  "buy catering equipment",
+  "catering equipment supplier",
+  "catering equipment wholesaler",
+  "bulk catering equipment",
+  "catering equipment manufacturer",
+  "catering equipment distributor",
+
+  // Competitor searches
+  "Raj catering equipment",
+  "Raj kitchen",
+  "Arjun catering",
+  "Vinod cookware alternative",
+
+  // Brand
+  "New Catering Hub",
+  "Catering Hub Mumbai",
+  "newcateringhub",
+],
   authors: [{ name: 'Catering Hub' }],
   creator: 'Catering Hub',
   publisher: 'Catering Hub',
