@@ -128,4 +128,34 @@ export default async function BlogPage({
       </div>
     </main>
   );
+  
+}
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+
+  const blog = await getBlog(slug);
+
+  if (!blog) {
+    return {
+      title: "Blog Not Found",
+    };
+  }
+
+  return {
+    title: blog.title,
+    description: blog.excerpt,
+    alternates: {
+      canonical: `https://newcateringhub.com/blogs/${slug}`,
+    },
+    openGraph: {
+      title: blog.title,
+      description: blog.excerpt,
+      url: `https://newcateringhub.com/blogs/${slug}`,
+      type: "article",
+    },
+  };
 }
