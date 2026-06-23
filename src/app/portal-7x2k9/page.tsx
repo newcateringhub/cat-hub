@@ -107,11 +107,10 @@ const deleteBlog = async (id: string) => {
       throw new Error();
     }
 
-    alert(
-      editingId
-        ? "Blog updated!"
-        : "Blog published!"
-    );
+    setNotification({
+  type: "success",
+  message: "Blog updated successfully.",
+});
 
     setEditingId(null);
 
