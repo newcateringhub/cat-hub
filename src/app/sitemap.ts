@@ -5,47 +5,43 @@ import { getBlogs } from "@/lib/strapi";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = "https://newcateringhub.com";
 
-  const blogs = await getBlogs();
+  let blogs = [];
+
+  try {
+    blogs = await getBlogs();
+  } catch (error) {
+    console.error("Failed to fetch blogs:", error);
+  }
+
+  const now = new Date();
 
   const staticRoutes: MetadataRoute.Sitemap = [
     {
       url: base,
-      lastModified: new Date(),
+      lastModified: now,
       changeFrequency: "weekly",
       priority: 1,
     },
     {
       url: `${base}/products`,
-      lastModified: new Date(),
+      lastModified: now,
       changeFrequency: "weekly",
       priority: 0.9,
     },
     {
       url: `${base}/blogs`,
-      lastModified: new Date(),
+      lastModified: now,
       changeFrequency: "weekly",
       priority: 0.8,
-    },
-    {
-      url: `${base}/catalogues`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.7,
-    },
-    {
-      url: `${base}/contact`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.7,
     },
   ];
 
   const productRoutes: MetadataRoute.Sitemap =
     products.map((product) => ({
       url: `${base}/products/${product.id}`,
-      lastModified: new Date(),
+      lastModified: now,
       changeFrequency: "monthly",
-      priority: 0.6,
+      priority: 0.7,
     }));
 
   const blogRoutes: MetadataRoute.Sitemap =
@@ -53,9 +49,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: `${base}/blogs/${blog.slug}`,
       lastModified: blog.updatedAt
         ? new Date(blog.updatedAt)
-        : new Date(),
+        : now,
       changeFrequency: "monthly",
-      priority: 0.7,
+      priority: 0.8,
     }));
 
   return [
