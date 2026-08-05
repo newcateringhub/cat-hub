@@ -57,7 +57,7 @@ export default function ContactSection() {
                   </svg>
                 ),
                 label: 'Quick Connect',
-                content: '+91 91365 64863\nadhiyayan85@gmail.com'
+                content: '+91 91365 64863\ncateringhub19@gmail.com'
               },
               {
                 icon: (
