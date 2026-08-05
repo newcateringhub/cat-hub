@@ -87,7 +87,7 @@ export default function Footer() {
               </svg>
               WhatsApp Us
             </a>
-            <a href="mailto:adhiyayan85@gmail.com" className="text-[11px] uppercase tracking-wider text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition-colors">
+            <a href="mailto:cateringhub19@gmail.com" className="text-[11px] uppercase tracking-wider text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition-colors">
               Email
             </a>
           </div>
